@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Conditioned Data Frames</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Conditioned Data Frames</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Conditioned data frames, or <code>cnd_df</code>, are a powerful tool
+in the <code>{sdtm.oak}</code> package designed to facilitate
+conditional transformations on data frames. This article explains how to
+create and use conditioned data frames, particularly in the context of
+SDTM domain derivations.</p>
+</div>
+<div id="creating-conditioned-data-frames" class="section level2">
+<h2>Creating Conditioned Data Frames</h2>
+<p>A conditioned data frame is a regular data frame extended with a
+logical vector <code>cnd</code> that marks rows for subsequent
+conditional transformations. The <code>condition_add()</code> function
+is used to create these conditioned data frames.</p>
+<div id="simple-example" class="section level3">
+<h3>Simple Example</h3>
+<p>Consider a simple data frame <code>df</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>(df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="dv">3</span><span class="dt">L</span>, <span class="at">y =</span> letters[<span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="dv">3</span><span class="dt">L</span>]))</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 2
+##       x y    
+##   &lt;int&gt; &lt;chr&gt;
+## 1     1 a    
+## 2     2 b    
+## 3     3 c</code></pre>
+<p>We can create a conditioned data frame where only rows where
+<code>x &gt; 1</code> are marked:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>(cnd_df <span class="ot">&lt;-</span> <span class="fu">condition_add</span>(<span class="at">dat =</span> df, x <span class="sc">&gt;</span> <span class="dv">1</span><span class="dt">L</span>))</span></code></pre></div>
+<pre><code>## # A tibble:  3 × 2
+## # Cond. tbl: 2/1/0
+##         x y    
+##     &lt;int&gt; &lt;chr&gt;
+## 1 F     1 a    
+## 2 T     2 b    
+## 3 T     3 c</code></pre>
+<p>Here, only the second and third rows are marked as
+<code>TRUE</code>.</p>
+</div>
+</div>
+<div id="usage-in-sdtm-domain-derivations" class="section level2">
+<h2>Usage in SDTM Domain Derivations</h2>
+<p>The real power of conditioned data frames manifests when they are
+used with functions such as <code>assign_no_ct</code>,
+<code>assign_ct</code>, <code>hardcode_no_ct</code>, and
+<code>hardcode_ct</code>. These functions perform derivations only for
+the records that match the pattern of <code>TRUE</code> values in
+conditioned data frames.</p>
+<div id="example-with-concomitant-medications-cm-domain" class="section level3">
+<h3>Example with Concomitant Medications (CM) Domain</h3>
+<p>Consider a simplified dataset of concomitant medications, where we
+want to derive a new variable CMGRPID (Concomitant Medication Group ID)
+based on the condition that the medication treatment (CMTRT) is
+<code>&quot;BENADRYL&quot;</code>.</p>
+<p>Here is a simplified raw Concomitant Medications data set
+(<code>cm_raw</code>):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>cm_raw <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">oak_id =</span> <span class="fu">seq_len</span>(<span class="dv">14</span><span class="dt">L</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">raw_source =</span> <span class="st">&quot;ConMed&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">patient_number =</span> <span class="fu">c</span>(<span class="dv">375</span><span class="dt">L</span>, <span class="dv">375</span><span class="dt">L</span>, <span class="dv">376</span><span class="dt">L</span>, <span class="dv">377</span><span class="dt">L</span>, <span class="dv">377</span><span class="dt">L</span>, <span class="dv">377</span><span class="dt">L</span>, <span class="dv">377</span><span class="dt">L</span>, <span class="dv">378</span><span class="dt">L</span>, <span class="dv">378</span><span class="dt">L</span>, <span class="dv">378</span><span class="dt">L</span>, <span class="dv">378</span><span class="dt">L</span>, <span class="dv">379</span><span class="dt">L</span>, <span class="dv">379</span><span class="dt">L</span>, <span class="dv">379</span><span class="dt">L</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">MDNUM =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>, <span class="dv">5</span><span class="dt">L</span>, <span class="dv">4</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">MDRAW =</span> <span class="fu">c</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="st">&quot;BABY ASPIRIN&quot;</span>, <span class="st">&quot;CORTISPORIN&quot;</span>, <span class="st">&quot;ASPIRIN&quot;</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="st">&quot;DIPHENHYDRAMINE HCL&quot;</span>, <span class="st">&quot;PARCETEMOL&quot;</span>, <span class="st">&quot;VOMIKIND&quot;</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="st">&quot;ZENFLOX OZ&quot;</span>, <span class="st">&quot;AMITRYPTYLINE&quot;</span>, <span class="st">&quot;BENADRYL&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="st">&quot;DIPHENHYDRAMINE HYDROCHLORIDE&quot;</span>, <span class="st">&quot;TETRACYCLINE&quot;</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    <span class="st">&quot;BENADRYL&quot;</span>, <span class="st">&quot;SOMINEX&quot;</span>, <span class="st">&quot;ZQUILL&quot;</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  )</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>cm_raw</span></code></pre></div>
+<pre><code>## # A tibble: 14 × 5
+##    oak_id raw_source patient_number MDNUM MDRAW                        
+##     &lt;int&gt; &lt;chr&gt;               &lt;int&gt; &lt;int&gt; &lt;chr&gt;                        
+##  1      1 ConMed                375     1 BABY ASPIRIN                 
+##  2      2 ConMed                375     2 CORTISPORIN                  
+##  3      3 ConMed                376     1 ASPIRIN                      
+##  4      4 ConMed                377     1 DIPHENHYDRAMINE HCL          
+##  5      5 ConMed                377     2 PARCETEMOL                   
+##  6      6 ConMed                377     3 VOMIKIND                     
+##  7      7 ConMed                377     5 ZENFLOX OZ                   
+##  8      8 ConMed                378     4 AMITRYPTYLINE                
+##  9      9 ConMed                378     1 BENADRYL                     
+## 10     10 ConMed                378     2 DIPHENHYDRAMINE HYDROCHLORIDE
+## 11     11 ConMed                378     3 TETRACYCLINE                 
+## 12     12 ConMed                379     1 BENADRYL                     
+## 13     13 ConMed                379     2 SOMINEX                      
+## 14     14 ConMed                379     3 ZQUILL</code></pre>
+<p>To derive the <code>CMTRT</code> variable we use the
+<code>assign_no_ct()</code> function to map the <code>MDRAW</code>
+variable to the <code>CMTRT</code> variable:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>tgt_dat <span class="ot">&lt;-</span> <span class="fu">assign_no_ct</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">tgt_var =</span> <span class="st">&quot;CMTRT&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">raw_var =</span> <span class="st">&quot;MDRAW&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>tgt_dat</span></code></pre></div>
+<pre><code>## # A tibble: 14 × 4
+##    oak_id raw_source patient_number CMTRT                        
+##     &lt;int&gt; &lt;chr&gt;               &lt;int&gt; &lt;chr&gt;                        
+##  1      1 ConMed                375 BABY ASPIRIN                 
+##  2      2 ConMed                375 CORTISPORIN                  
+##  3      3 ConMed                376 ASPIRIN                      
+##  4      4 ConMed                377 DIPHENHYDRAMINE HCL          
+##  5      5 ConMed                377 PARCETEMOL                   
+##  6      6 ConMed                377 VOMIKIND                     
+##  7      7 ConMed                377 ZENFLOX OZ                   
+##  8      8 ConMed                378 AMITRYPTYLINE                
+##  9      9 ConMed                378 BENADRYL                     
+## 10     10 ConMed                378 DIPHENHYDRAMINE HYDROCHLORIDE
+## 11     11 ConMed                378 TETRACYCLINE                 
+## 12     12 ConMed                379 BENADRYL                     
+## 13     13 ConMed                379 SOMINEX                      
+## 14     14 ConMed                379 ZQUILL</code></pre>
+<p>Then we create a conditioned data frame from the target data set
+(<code>tgt_dat</code>), meaning we create a conditioned data frame where
+only rows with <code>CMTRT</code> equal to <code>&quot;BENADRYL&quot;</code> are
+marked:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>(cnd_tgt_dat <span class="ot">&lt;-</span> <span class="fu">condition_add</span>(tgt_dat, CMTRT <span class="sc">==</span> <span class="st">&quot;BENADRYL&quot;</span>))</span></code></pre></div>
+<pre><code>## # A tibble:  14 × 4
+## # Cond. tbl: 2/12/0
+##      oak_id raw_source patient_number CMTRT                        
+##       &lt;int&gt; &lt;chr&gt;               &lt;int&gt; &lt;chr&gt;                        
+## 1  F      1 ConMed                375 BABY ASPIRIN                 
+## 2  F      2 ConMed                375 CORTISPORIN                  
+## 3  F      3 ConMed                376 ASPIRIN                      
+## 4  F      4 ConMed                377 DIPHENHYDRAMINE HCL          
+## 5  F      5 ConMed                377 PARCETEMOL                   
+## 6  F      6 ConMed                377 VOMIKIND                     
+## 7  F      7 ConMed                377 ZENFLOX OZ                   
+## 8  F      8 ConMed                378 AMITRYPTYLINE                
+## 9  T      9 ConMed                378 BENADRYL                     
+## 10 F     10 ConMed                378 DIPHENHYDRAMINE HYDROCHLORIDE
+## 11 F     11 ConMed                378 TETRACYCLINE                 
+## 12 T     12 ConMed                379 BENADRYL                     
+## 13 F     13 ConMed                379 SOMINEX                      
+## 14 F     14 ConMed                379 ZQUILL</code></pre>
+<p>Finally, we derive the <code>CMGRPID</code> variable conditionally.
+Using <code>assign_no_ct()</code>, we derive <code>CMGRPID</code> which
+indicates the group ID for the medication, based on the conditioned
+target data set:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>derived_tgt_dat <span class="ot">&lt;-</span> <span class="fu">assign_no_ct</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="at">tgt_dat =</span> cnd_tgt_dat,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">tgt_var =</span> <span class="st">&quot;CMGRPID&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">raw_var =</span> <span class="st">&quot;MDNUM&quot;</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>derived_tgt_dat</span></code></pre></div>
+<pre><code>## # A tibble: 14 × 5
+##    oak_id raw_source patient_number CMTRT                         CMGRPID
+##     &lt;int&gt; &lt;chr&gt;               &lt;int&gt; &lt;chr&gt;                           &lt;int&gt;
+##  1      1 ConMed                375 BABY ASPIRIN                       NA
+##  2      2 ConMed                375 CORTISPORIN                        NA
+##  3      3 ConMed                376 ASPIRIN                            NA
+##  4      4 ConMed                377 DIPHENHYDRAMINE HCL                NA
+##  5      5 ConMed                377 PARCETEMOL                         NA
+##  6      6 ConMed                377 VOMIKIND                           NA
+##  7      7 ConMed                377 ZENFLOX OZ                         NA
+##  8      8 ConMed                378 AMITRYPTYLINE                      NA
+##  9      9 ConMed                378 BENADRYL                            1
+## 10     10 ConMed                378 DIPHENHYDRAMINE HYDROCHLORIDE      NA
+## 11     11 ConMed                378 TETRACYCLINE                       NA
+## 12     12 ConMed                379 BENADRYL                            1
+## 13     13 ConMed                379 SOMINEX                            NA
+## 14     14 ConMed                379 ZQUILL                             NA</code></pre>
+<p>Conditioned data frames in the <code>{sdtm.oak}</code> package
+provide a flexible way to perform conditional transformations on data
+sets. By marking specific rows for transformation, users can efficiently
+derive SDTM variables, ensuring that only relevant records are
+processed.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
