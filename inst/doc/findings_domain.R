@@ -14,7 +14,7 @@ vs_raw <- read.csv(system.file("raw_data/vitals_raw_data.csv",
   package = "sdtm.oak"
 ))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 sdtm.oak:::dataset_oak_vignette(
   vs_raw,
   display_vars = exprs(
@@ -30,7 +30,7 @@ vs_raw <- vs_raw %>%
     raw_src = "vitals"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 sdtm.oak:::dataset_oak_vignette(
   vs_raw,
   display_vars = exprs(
@@ -48,7 +48,7 @@ study_ct <- read.csv(system.file("raw_data/sdtm_ct.csv",
   package = "sdtm.oak"
 ))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 sdtm.oak:::dataset_oak_vignette(
   study_ct,
   display_vars = exprs(
@@ -72,7 +72,7 @@ vs_sysbp <-
   # Only these records need qualifier mappings.
   dplyr::filter(!is.na(.data$VSTESTCD))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 sdtm.oak:::dataset_oak_vignette(
   vs_sysbp,
   display_vars = exprs(
@@ -120,7 +120,7 @@ vs_sysbp <- vs_sysbp %>%
     id_vars = oak_id_vars()
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 sdtm.oak:::dataset_oak_vignette(
   vs_sysbp,
   display_vars = exprs(
@@ -382,7 +382,7 @@ vs_vsall <-
     id_vars = oak_id_vars()
   )
 
-## ---- eval=TRUE---------------------------------------------------------------
+## ----eval=TRUE----------------------------------------------------------------
 # Combine all the topic variables into a single data frame and map qualifiers
 # applicable to all topic variables
 vs <- dplyr::bind_rows(
@@ -434,7 +434,7 @@ vs <- dplyr::bind_rows(
     id_vars = oak_id_vars()
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 sdtm.oak:::dataset_oak_vignette(
   vs,
   display_vars = exprs(
@@ -462,7 +462,7 @@ vs <- vs %>%
   ) %>%
   dplyr::select("STUDYID", "DOMAIN", "USUBJID", everything())
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 sdtm.oak:::dataset_oak_vignette(
   vs,
   display_vars = exprs(

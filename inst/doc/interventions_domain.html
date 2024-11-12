@@ -1,0 +1,2941 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Creating an Interventions SDTM domain</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating an Interventions SDTM domain</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This article describes creating an Interventions SDTM domain using
+the <code>sdtm.oak</code> package. Examples are currently presented and
+tested in the context of the CM domain.</p>
+</div>
+<div id="raw-data" class="section level1">
+<h1>Raw data</h1>
+<p>Raw datasets can be exported from the EDC systems in the format they
+are collected. The example used provides a raw dataset for Concomitant
+medications, where the collected data is represented as columns for each
+subject. For example, the Medication Name(MDRAW), Medication Start Date
+(MDBDR), Start Time (MDBTM), End Date (MDEDR), End time (MDETM), etc.
+are represented as columns.This format is commonly used in most EDC
+systems.</p>
+<p>The raw dataset is presented below:</p>
+<table>
+<colgroup>
+<col width="3%" />
+<col width="12%" />
+<col width="3%" />
+<col width="15%" />
+<col width="5%" />
+<col width="6%" />
+<col width="3%" />
+<col width="4%" />
+<col width="6%" />
+<col width="3%" />
+<col width="3%" />
+<col width="2%" />
+<col width="4%" />
+<col width="5%" />
+<col width="10%" />
+<col width="9%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">PATNUM</th>
+<th align="left">FORML</th>
+<th align="right">MDNUM</th>
+<th align="left">MDRAW</th>
+<th align="left">MDIND</th>
+<th align="left">MDBDR</th>
+<th align="left">MDBTM</th>
+<th align="right">MDPRIOR</th>
+<th align="left">MDEDR</th>
+<th align="left">MDETM</th>
+<th align="right">MDONG</th>
+<th align="right">DOS</th>
+<th align="left">DOSU</th>
+<th align="left">MDFORM</th>
+<th align="left">MDRTE</th>
+<th align="left">MDFRQ</th>
+<th align="right">MDPROPH</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">375</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">1</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="right">1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="right">1</td>
+<td align="right">10</td>
+<td align="left">mg</td>
+<td align="left">Tablet</td>
+<td align="left">PO (Oral)</td>
+<td align="left">QD (Every Day)</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">375</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">2</td>
+<td align="left">CORTISPORIN</td>
+<td align="left">NAUSEA</td>
+<td align="left">15-Sep-20</td>
+<td align="left"></td>
+<td align="right">0</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="left">g</td>
+<td align="left">Pill</td>
+<td align="left">PO (Oral)</td>
+<td align="left"></td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">376</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">1</td>
+<td align="left">ASPIRIN</td>
+<td align="left">ANEMIA</td>
+<td align="left">17-Feb-21</td>
+<td align="left">8:00</td>
+<td align="right">0</td>
+<td align="left">17-Feb-21</td>
+<td align="left"></td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">377</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">1</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="left">NAUSEA</td>
+<td align="left">4-Oct-20</td>
+<td align="left">9:00</td>
+<td align="right">0</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="left">mg</td>
+<td align="left">Capsule</td>
+<td align="left">PO (Oral)</td>
+<td align="left">BID (Twice a Day)</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">377</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">2</td>
+<td align="left">PARCETEMOL</td>
+<td align="left">PYREXIA</td>
+<td align="left">20-Jan-20</td>
+<td align="left">10:00</td>
+<td align="right">0</td>
+<td align="left">20-Jan-20</td>
+<td align="left">10:00</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="left">mg</td>
+<td align="left">Capsule</td>
+<td align="left">PO (Oral)</td>
+<td align="left">BID (Twice a Day)</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">377</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">3</td>
+<td align="left">VOMIKIND</td>
+<td align="left">VOMITINGS</td>
+<td align="left">UN UNK 2019</td>
+<td align="left"></td>
+<td align="right">0</td>
+<td align="left">UN UNK 2019</td>
+<td align="left"></td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="left">Tablet</td>
+<td align="left"></td>
+<td align="left">PO (Oral)</td>
+<td align="left">PRN (As Needed)</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="right">377</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">5</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="left">DIARHHEA</td>
+<td align="left">20 UNK 2019</td>
+<td align="left">10:00</td>
+<td align="right">0</td>
+<td align="left">20 UNK 2019</td>
+<td align="left"></td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="left">mL</td>
+<td align="left">Injection</td>
+<td align="left">IM (Intramuscular)</td>
+<td align="left">PRN (As Needed)</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">378</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">4</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="left">COLD</td>
+<td align="left">UN UNK 2020</td>
+<td align="left"></td>
+<td align="right">1</td>
+<td align="left">UN UNK 2020</td>
+<td align="left"></td>
+<td align="right">0</td>
+<td align="right">12</td>
+<td align="left">g</td>
+<td align="left">Inhalant</td>
+<td align="left">IA (Intra-arterial)</td>
+<td align="left">QD (Every Day)</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">378</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">1</td>
+<td align="left">BENADRYL</td>
+<td align="left">FEVER</td>
+<td align="left">26-Jan-20</td>
+<td align="left">9:00</td>
+<td align="right">0</td>
+<td align="left">26-Jan-20</td>
+<td align="left">7:00</td>
+<td align="right">0</td>
+<td align="right">100</td>
+<td align="left">mg</td>
+<td align="left">Capsule</td>
+<td align="left">PO (Oral)</td>
+<td align="left">BID (Twice a Day)</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">378</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">2</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="left">LEG PAIN</td>
+<td align="left">28-Jan-20</td>
+<td align="left"></td>
+<td align="right">1</td>
+<td align="left">1-Feb-20</td>
+<td align="left"></td>
+<td align="right">1</td>
+<td align="right">100</td>
+<td align="left">Capsule</td>
+<td align="left">Capsule</td>
+<td align="left">Unknown</td>
+<td align="left">QD (Every Day)</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="programming-workflow" class="section level1">
+<h1>Programming workflow</h1>
+<p>In {sdtm.oak} we process one raw dataset at a time. Similar raw
+datasets (example Concomitant medications (OID - cm_raw), Targeted
+Concomitant Medications (OID - cm_t_raw)) can be stacked together before
+processing.</p>
+<ul>
+<li><a href="#readdata">Read in data</a></li>
+<li><a href="#oakidvars">Create oak_id_vars</a></li>
+<li><a href="#readct">Read in CT</a></li>
+<li><a href="#maptopic">Map Topic Variable</a></li>
+<li><a href="#maprest">Map Rest of the Variables</a>
+<ul>
+<li><a href="#assign_no_ct">assign_no_ct</a></li>
+<li><a href="#assign_ct">assign_ct</a></li>
+<li><a href="#assign_datetime">assign_datetime</a></li>
+<li><a href="#hardcode_ct">hardcode_ct and condition_add</a></li>
+<li><a href="#hardcode_no_ct">hardcode_no_ct and condition_add</a></li>
+<li><a href="#condition_add_tar">condition_add involving target
+domain</a></li>
+<li><a href="#condition_add_raw_tar">condition_add involving raw dataset
+and target domain</a></li>
+</ul></li>
+<li><a href="#repeatsteps">Repeat Map Topic and Map Rest</a></li>
+</ul>
+<p>Repeat the above steps for different raw datasets before proceeding
+with the below steps.</p>
+<ul>
+<li><a href="#derivedvars">Create SDTM derived variables</a></li>
+<li><a href="#attributes">Add Labels and Attributes</a></li>
+</ul>
+<div id="readdata" class="section level2">
+<h2>Read in data</h2>
+<p>Read all the raw datasets into the environment. In this example, the
+raw dataset name is <code>cm_raw</code>. Users can read it from the
+package using the below code:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>cm_raw <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;raw_data/cm_raw_data.csv&quot;</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;sdtm.oak&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>))</span></code></pre></div>
+</div>
+<div id="oakidvars" class="section level2">
+<h2>Create oak_id_vars</h2>
+<p>The <code>oak_id_vars</code> is a crucial link between the raw
+datasets and the mapped SDTM domain. As the user derives each SDTM
+variable, it is merged with the corresponding topic variable using
+<code>oak_id_vars</code>. In {sdtm.oak}, the variables oak_id,
+raw_source, and patient_number are considered as
+<code>oak_id_vars</code>. These three variables must be added to all raw
+datasets. They are used in multiple places in the programming.</p>
+<p>oak_id:- Type: numeric- Value: equal to the raw dataframe row
+number.</p>
+<p>raw_source:- Type: Character- Value: equal to the raw dataset (eCRF)
+name or eDT dataset name.</p>
+<p>patient_number:- Type: numeric- Value: equal to the subject number in
+CRF or NonCRF data source.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>cm_raw <span class="ot">&lt;-</span> cm_raw <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">generate_oak_id_vars</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="at">pat_var =</span> <span class="st">&quot;PATNUM&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="at">raw_src =</span> <span class="st">&quot;cm_raw&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="11%" />
+<col width="15%" />
+<col width="7%" />
+<col width="24%" />
+<col width="6%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="right">PATNUM</th>
+<th align="left">FORML</th>
+<th align="right">MDNUM</th>
+<th align="left">MDRAW</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="right">375</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">1</td>
+<td align="left">BABY ASPIRIN</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="right">375</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">2</td>
+<td align="left">CORTISPORIN</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="right">376</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">1</td>
+<td align="left">ASPIRIN</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="right">377</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">1</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="right">377</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">2</td>
+<td align="left">PARCETEMOL</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="right">377</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">3</td>
+<td align="left">VOMIKIND</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="right">377</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">5</td>
+<td align="left">ZENFLOX OZ</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="right">378</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">4</td>
+<td align="left">AMITRYPTYLINE</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="right">378</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">1</td>
+<td align="left">BENADRYL</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="right">378</td>
+<td align="left">Concomitant Medications</td>
+<td align="right">2</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+</tr>
+</tbody>
+</table>
+<p>Read in the DM domain</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>dm <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;raw_data/dm.csv&quot;</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;sdtm.oak&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>))</span></code></pre></div>
+</div>
+<div id="readct" class="section level2">
+<h2>Read in CT</h2>
+<p>Controlled Terminology is part of the SDTM specification and it is
+prepared by the user. In this example, the study controlled terminology
+name is <code>sdtm_ct.csv</code>. Users can read it from the package
+using the below code:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>study_ct <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;raw_data/sdtm_ct.csv&quot;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;sdtm.oak&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="11%" />
+<col width="12%" />
+<col width="18%" />
+<col width="26%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">codelist_code</th>
+<th align="left">term_code</th>
+<th align="left">term_value</th>
+<th align="left">collected_value</th>
+<th align="left">term_preferred_term</th>
+<th align="left">term_synonyms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">C66726</td>
+<td align="left">C25158</td>
+<td align="left">CAPSULE</td>
+<td align="left">Capsule</td>
+<td align="left">Capsule Dosage Form</td>
+<td align="left">cap</td>
+</tr>
+<tr class="even">
+<td align="left">C66726</td>
+<td align="left">C25394</td>
+<td align="left">PILL</td>
+<td align="left">Pill</td>
+<td align="left">Pill Dosage Form</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">C66726</td>
+<td align="left">C29167</td>
+<td align="left">LOTION</td>
+<td align="left">Lotion</td>
+<td align="left">Lotion Dosage Form</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">C66726</td>
+<td align="left">C42887</td>
+<td align="left">AEROSOL</td>
+<td align="left">Aerosol</td>
+<td align="left">Aerosol Dosage Form</td>
+<td align="left">aer</td>
+</tr>
+<tr class="odd">
+<td align="left">C66726</td>
+<td align="left">C42944</td>
+<td align="left">INHALANT</td>
+<td align="left">Inhalant</td>
+<td align="left">Inhalant Dosage Form</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">C66726</td>
+<td align="left">C42946</td>
+<td align="left">INJECTION</td>
+<td align="left">Injection</td>
+<td align="left">Injectable Dosage Form</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">C66726</td>
+<td align="left">C42953</td>
+<td align="left">LIQUID</td>
+<td align="left">Liquid</td>
+<td align="left">Liquid Dosage Form</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">C66726</td>
+<td align="left">C42998</td>
+<td align="left">TABLET</td>
+<td align="left">Tablet</td>
+<td align="left">Tablet Dosage Form</td>
+<td align="left">tab</td>
+</tr>
+<tr class="odd">
+<td align="left">C66728</td>
+<td align="left">C25629</td>
+<td align="left">BEFORE</td>
+<td align="left">Prior</td>
+<td align="left">Prior</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">C66728</td>
+<td align="left">C53279</td>
+<td align="left">ONGOING</td>
+<td align="left">Continue</td>
+<td align="left">Continue</td>
+<td align="left">Continuous</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="maptopic" class="section level2">
+<h2>Map Topic Variable</h2>
+<p>The topic variable is mapped as a first step in the mapping process.
+It is the primary variable in the SDTM domain. The rest of the variables
+add further definition to the topic variable. In this example, the topic
+variable is <code>CMTRT</code>. It is mapped from the raw dataset column
+<code>MDRAW</code>. The mapping logic is
+<code>Map the collected value in the cm_raw dataset MDRAW variable to CM.CMTRT</code>.</p>
+<p>This mapping does not involve any controlled terminology. The
+<code>assign_no_ct</code> function is used for mapping. Once the topic
+variable is mapped, the Qualifier, Identifier, and Timing variables can
+be mapped.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="co"># Map topic variable</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDRAW&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMTRT&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="maprest" class="section level2">
+<h2>Map Rest of the Variables</h2>
+<p>The Qualifiers, Identifiers, and Timing Variables can be mapped in
+any order. In this example, we will map each variable one by one to
+demonstrate different mapping algorithms.</p>
+<div id="assign_no_ct" class="section level3">
+<h3>assign_no_ct</h3>
+<p>The mapping logic for <code>CMGRPID</code> is
+<code>Map the collected value in the cm_raw dataset MDNUM variable to CM.CMGRPID</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="co"># Map CMGRPID</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDNUM&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMGRPID&quot;</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  )</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="9%" />
+<col width="15%" />
+<col width="21%" />
+<col width="42%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+<th align="right">CMGRPID</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+<p>The CMGRPID is added to the corresponding CMTRT based on the
+‘oak_id_vars’. When calling the function, the parameter ‘id_vars =
+oak_id_vars()’ matches the raw dataset ‘oak_id_vars’ to the
+‘oak_id_vars’ in the cm domain created in the previous step. It’s
+important to note that the ‘oak_id_vars’ can be extended to include
+user-defined variables. But in most cases, the three variables should
+suffice.</p>
+</div>
+<div id="assign_ct" class="section level3">
+<h3>assign_ct</h3>
+<p>The mapping logic for <code>CMDOSU</code> is
+<code>Map the collected value in the cm_raw dataset DOSU variable to CM.CMDOSU</code>.
+The controlled terminology is used to map the collected value to the
+standard value. <code>assign_ct</code> is the right algorithm to perform
+this mapping.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="co"># Map qualifier CMDOSU</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">assign_ct</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;DOSU&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDOSU&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="at">ct_clst =</span> <span class="st">&quot;C71620&quot;</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="13%" />
+<col width="18%" />
+<col width="37%" />
+<col width="10%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+<th align="right">CMGRPID</th>
+<th align="left">CMDOSU</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+<td align="right">2</td>
+<td align="left">g</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+<td align="right">1</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+<td align="right">2</td>
+<td align="left">mg</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+<td align="right">3</td>
+<td align="left">TABLET</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="right">5</td>
+<td align="left">mL</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="right">4</td>
+<td align="left">g</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">2</td>
+<td align="left">CAPSULE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="assign_datetime" class="section level3">
+<h3>assign_datetime</h3>
+<p>The mapping logic for <code>CMSTDTC</code> is
+<code>Map the collected value in the cm_raw dataset MDBDR (start date) variable and MDBTM (start time) to CM.CMSTDTC</code>.
+The collected date value is in the format ‘dd mmm yyyy’. The collected
+time value is in ‘H”M’ format. The <code>assign_datetime</code> function
+is used to map the collected value in ISO8601 format.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="co"># Map CMSTDTC. This function calls create_iso8601</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">assign_datetime</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="fu">c</span>(<span class="st">&quot;MDBDR&quot;</span>, <span class="st">&quot;MDBTM&quot;</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMSTDTC&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="at">raw_fmt =</span> <span class="fu">c</span>(<span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;d-m-y&quot;</span>, <span class="st">&quot;dd mmm yyyy&quot;</span>)), <span class="st">&quot;H:M&quot;</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    <span class="at">raw_unk =</span> <span class="fu">c</span>(<span class="st">&quot;UN&quot;</span>, <span class="st">&quot;UNK&quot;</span>),</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="11%" />
+<col width="15%" />
+<col width="31%" />
+<col width="8%" />
+<col width="8%" />
+<col width="17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+<th align="right">CMGRPID</th>
+<th align="left">CMDOSU</th>
+<th align="left">CMSTDTC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+<td align="right">2</td>
+<td align="left">g</td>
+<td align="left">2020-09-15</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+<td align="right">1</td>
+<td align="left"></td>
+<td align="left">2021-02-17T08:00</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-10-04T09:00</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+<td align="right">2</td>
+<td align="left">mg</td>
+<td align="left">2020-01-20T10:00</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+<td align="right">3</td>
+<td align="left">TABLET</td>
+<td align="left">2019</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="right">5</td>
+<td align="left">mL</td>
+<td align="left">2019—20T10:00</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="right">4</td>
+<td align="left">g</td>
+<td align="left">2020</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-01-26T09:00</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">2</td>
+<td align="left">CAPSULE</td>
+<td align="left">2020-01-28</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="hardcode_ct" class="section level3">
+<h3>hardcode_ct and condition_add</h3>
+<p>The mapping logic for <code>CMSTRTPT</code> is as follows:
+<code>If the collected value in the raw variable MDPRIOR and raw dataset cm_raw equals to 1, then CM.CMSTRTPT == &#39;BEFORE&#39;.</code>
+The <code>hardcode_ct</code> function is used to map the CMSTRTPT as it
+involves hardcoding a specific value to an SDTM variable with controlled
+terminology. The <code>condition_add</code> function filters the raw
+dataset based on a particular condition, and the
+<code>hardcode_ct</code> function performs the mapping.</p>
+<p>When these two functions are used together, the
+<code>condition_add</code> function first filters the raw dataset based
+on the specified condition. Next, the filtered dataset is then passed to
+the <code>hardcode_ct</code> function to assign the appropriate value.
+This example illustrates how the <code>hardcode_ct</code> algorithm
+functions as a sub-algorithm to <code>condition_add</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="co"># Map qualifier CMSTRTPT  Annotation text is If MDPRIOR == 1 then CM.CMSTRTPT = &#39;BEFORE&#39;</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="fu">hardcode_ct</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> <span class="fu">condition_add</span>(cm_raw, MDPRIOR <span class="sc">==</span> <span class="st">&quot;1&quot;</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDPRIOR&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMSTRTPT&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>    <span class="at">tgt_val =</span> <span class="st">&quot;BEFORE&quot;</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>    <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    <span class="at">ct_clst =</span> <span class="st">&quot;C66728&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="10%" />
+<col width="14%" />
+<col width="28%" />
+<col width="7%" />
+<col width="7%" />
+<col width="16%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+<th align="right">CMGRPID</th>
+<th align="left">CMDOSU</th>
+<th align="left">CMSTDTC</th>
+<th align="left">CMSTRTPT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">NA</td>
+<td align="left">BEFORE</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+<td align="right">2</td>
+<td align="left">g</td>
+<td align="left">2020-09-15</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+<td align="right">1</td>
+<td align="left"></td>
+<td align="left">2021-02-17T08:00</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-10-04T09:00</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+<td align="right">2</td>
+<td align="left">mg</td>
+<td align="left">2020-01-20T10:00</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+<td align="right">3</td>
+<td align="left">TABLET</td>
+<td align="left">2019</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="right">5</td>
+<td align="left">mL</td>
+<td align="left">2019—20T10:00</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="right">4</td>
+<td align="left">g</td>
+<td align="left">2020</td>
+<td align="left">BEFORE</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-01-26T09:00</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">2</td>
+<td align="left">CAPSULE</td>
+<td align="left">2020-01-28</td>
+<td align="left">BEFORE</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>condition_add</code> function adds additional metadata to
+the records in the raw dataset that meets the condition. Refer to the
+function documentation for more details. <code>hardcode_ct</code>
+function uses the additional metadata to find the records that meet the
+criteria and map them accordingly.</p>
+</div>
+<div id="hardcode_no_ct" class="section level3">
+<h3>hardcode_no_ct and condition_add</h3>
+<p>The mapping logic for <code>CMSTTPT</code> is as follows:
+<code>If the collected value in the raw variable MDPRIOR and raw dataset cm_raw equals to 1, then CM.CMSTTPT == &#39;SCREENING&#39;.</code>
+The <code>hardcode_no_ct</code> function is used to map the CMSTTPT as
+it involves hardcoding a specific value to an SDTM variable without
+controlled terminology. The <code>condition_add</code> function filters
+the raw dataset based on a particular condition, and the
+<code>hardcode_no_ct</code> function performs the mapping.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="co"># Map qualifier CMSTTPT  Annotation text is If MDPRIOR == 1 then CM.CMSTTPT = &#39;SCREENING&#39;</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">hardcode_no_ct</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> <span class="fu">condition_add</span>(cm_raw, MDPRIOR <span class="sc">==</span> <span class="st">&quot;1&quot;</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDPRIOR&quot;</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMSTTPT&quot;</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="at">tgt_val =</span> <span class="st">&quot;SCREENING&quot;</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="9%" />
+<col width="13%" />
+<col width="26%" />
+<col width="6%" />
+<col width="6%" />
+<col width="14%" />
+<col width="7%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+<th align="right">CMGRPID</th>
+<th align="left">CMDOSU</th>
+<th align="left">CMSTDTC</th>
+<th align="left">CMSTRTPT</th>
+<th align="left">CMSTTPT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">NA</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+<td align="right">2</td>
+<td align="left">g</td>
+<td align="left">2020-09-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+<td align="right">1</td>
+<td align="left"></td>
+<td align="left">2021-02-17T08:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-10-04T09:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+<td align="right">2</td>
+<td align="left">mg</td>
+<td align="left">2020-01-20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+<td align="right">3</td>
+<td align="left">TABLET</td>
+<td align="left">2019</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="right">5</td>
+<td align="left">mL</td>
+<td align="left">2019—20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="right">4</td>
+<td align="left">g</td>
+<td align="left">2020</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-01-26T09:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">2</td>
+<td align="left">CAPSULE</td>
+<td align="left">2020-01-28</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="condition_add_tar" class="section level3">
+<h3>condition_add involving target domain</h3>
+<p>In the mapping for <code>CMSTRTPT</code> and <code>CMSTTTPT</code>,
+the <code>condition_add</code> function is used in the raw dataset. In
+this mapping, we can explore how to use <code>condition_add</code> to
+add a filter condition based on the target SDTM variable.</p>
+<p>The mapping logic for <code>CMDOSFRQ</code> is
+<code>If CMTRT is not null, then map the collected value in raw dataset cm_raw and raw variable MDFRQ to CMDOSFRQ.</code>
+This may or may not represent a valid SDTM mapping in an actual study,
+but it can be used as an example.</p>
+<p>In this mapping, the <code>condition_add</code> function filters the
+cm domain created in the previous step and adds metadata to the records
+where it meets the condition. The <code>assign_ct</code> function uses
+the additional metadata to find the records that meet the criteria and
+map them accordingly.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="co"># Map qualifier CMDOSFRQ  Annotation text is If CMTRT is not null then map</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="co"># the collected value in raw dataset cm_raw and raw variable MDFRQ to CMDOSFRQ</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  {</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="fu">assign_ct</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>      <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>      <span class="at">raw_var =</span> <span class="st">&quot;MDFRQ&quot;</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>      <span class="at">tgt_dat =</span>  <span class="fu">condition_add</span>(., <span class="sc">!</span><span class="fu">is.na</span>(CMTRT)),</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>      <span class="at">tgt_var =</span> <span class="st">&quot;CMDOSFRQ&quot;</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>      <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>      <span class="at">ct_clst =</span> <span class="st">&quot;C66728&quot;</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>      <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    )</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  }</span></code></pre></div>
+<table>
+<colgroup>
+<col width="5%" />
+<col width="8%" />
+<col width="11%" />
+<col width="22%" />
+<col width="6%" />
+<col width="6%" />
+<col width="12%" />
+<col width="6%" />
+<col width="7%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+<th align="right">CMGRPID</th>
+<th align="left">CMDOSU</th>
+<th align="left">CMSTDTC</th>
+<th align="left">CMSTRTPT</th>
+<th align="left">CMSTTPT</th>
+<th align="left">CMDOSFRQ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">NA</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+<td align="right">2</td>
+<td align="left">g</td>
+<td align="left">2020-09-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+<td align="right">1</td>
+<td align="left"></td>
+<td align="left">2021-02-17T08:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-10-04T09:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+<td align="right">2</td>
+<td align="left">mg</td>
+<td align="left">2020-01-20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+<td align="right">3</td>
+<td align="left">TABLET</td>
+<td align="left">2019</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PRN (AS NEEDED)</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="right">5</td>
+<td align="left">mL</td>
+<td align="left">2019—20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PRN (AS NEEDED)</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="right">4</td>
+<td align="left">g</td>
+<td align="left">2020</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-01-26T09:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">2</td>
+<td align="left">CAPSULE</td>
+<td align="left">2020-01-28</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+</tr>
+</tbody>
+</table>
+<p>Remember to use additional curly braces in the function call when
+using the <code>condition_add</code> function on the target dataset.
+This is necessary because the input target dataset is represented as a
+<code>.</code> and is passed on from the previous step using the
+{magrittr} pipe operator. Currently, there is a limitation when using a
+nested function call with <code>.</code> to reference one of the input
+parameters, and this <a href="https://magrittr.tidyverse.org/reference/pipe.html#using-the-dot-for-secondary-purposes">recommended
+approach</a> will overcome that.</p>
+<p>The placeholder <code>.</code> is for use with {magrittr} pipe
+<code>%&gt;%</code> operator. We encourage using <code>.</code> and
+{magrittr} pipe <code>%&gt;%</code> operator when using {sdtm.oak}
+functions.</p>
+<p>Another way to achieve the same outcome is by moving the
+‘condition_by’ call up one level, as illustrated below: it is not
+required to use the {magrittr} pipe <code>%&gt;%</code> or curly braces
+in this case.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="fu">condition_add</span>(<span class="sc">!</span><span class="fu">is.na</span>(CMTRT)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">assign_ct</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;DOSU&quot;</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDOSU&quot;</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">ct_clst =</span> <span class="st">&quot;C71620&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  )</span></code></pre></div>
+</div>
+<div id="condition_add_raw_tar" class="section level3">
+<h3>condition_add involving raw dataset and target domain</h3>
+<p>In this mapping, we can explore how to use <code>condition_add</code>
+to add a filter condition based on the target SDTM variable.</p>
+<p>The mapping logic for <code>CMMODIFY</code> is
+<code>If collected value in MODIFY in cm_raw is different to CM.CMTRT then assign the collected value to CMMODIFY in CM domain (CM.CMMODIFY)</code>.
+The <code>assign_no_ct</code> function is used to map the CMMODIFY as it
+involves mapping the collected value to the SDTM variable without
+controlled terminology. The <code>condition_add</code> function filters
+the raw dataset &amp; target dataset based on a particular condition,
+and the <code>assign_no_ct</code> function performs the mapping.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="co"># Map CMMODIFY  Annotation text  If collected value in MODIFY in cm_raw is</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="co"># different to CM.CMTRT then assign the collected value to CMMODIFY in</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="co"># CM domain (CM.CMMODIFY)</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  {</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>    <span class="fu">assign_no_ct</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>      <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>      <span class="at">raw_var =</span> <span class="st">&quot;MODIFY&quot;</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>      <span class="at">tgt_dat =</span> <span class="fu">condition_add</span>(., MODIFY <span class="sc">!=</span> CMTRT, <span class="at">.dat2 =</span> cm_raw),</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>      <span class="at">tgt_var =</span> <span class="st">&quot;CMMODIFY&quot;</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>      <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>    )</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  }</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="4%" />
+<col width="6%" />
+<col width="9%" />
+<col width="18%" />
+<col width="4%" />
+<col width="4%" />
+<col width="10%" />
+<col width="5%" />
+<col width="6%" />
+<col width="11%" />
+<col width="17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+<th align="right">CMGRPID</th>
+<th align="left">CMDOSU</th>
+<th align="left">CMSTDTC</th>
+<th align="left">CMSTRTPT</th>
+<th align="left">CMSTTPT</th>
+<th align="left">CMDOSFRQ</th>
+<th align="left">CMMODIFY</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">NA</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+<td align="right">2</td>
+<td align="left">g</td>
+<td align="left">2020-09-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">CORTISPORIN (UNITED STATES)</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+<td align="right">1</td>
+<td align="left"></td>
+<td align="left">2021-02-17T08:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-10-04T09:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+<td align="right">2</td>
+<td align="left">mg</td>
+<td align="left">2020-01-20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+<td align="right">3</td>
+<td align="left">TABLET</td>
+<td align="left">2019</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PRN (AS NEEDED)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="right">5</td>
+<td align="left">mL</td>
+<td align="left">2019—20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PRN (AS NEEDED)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="right">4</td>
+<td align="left">g</td>
+<td align="left">2020</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">AMITRIPTYLINE</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-01-26T09:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left">BENADRYL (UNITED STATES)</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">2</td>
+<td align="left">CAPSULE</td>
+<td align="left">2020-01-28</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<p>Another way to achieve the same outcome is by moving the
+‘condition_by’ call up one level, as illustrated below: it is not
+required to use the {magrittr} pipe <code>%&gt;%</code> or curly braces
+in this case.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">condition_add</span>(MODIFY <span class="sc">!=</span> CMTRT, <span class="at">.dat2 =</span> cm_raw) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MODIFY&quot;</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMMODIFY&quot;</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Now, complete mapping the rest of the SDTM variables.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="co"># Map CMINDC as the collected value in MDIND to CM.CMINDC</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDIND&quot;</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMINDC&quot;</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  <span class="co"># Map CMENDTC as the collected value in MDEDR and MDETM to CM.CMENDTC.</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  <span class="co"># This function calls create_iso8601</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>  <span class="fu">assign_datetime</span>(</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="fu">c</span>(<span class="st">&quot;MDEDR&quot;</span>, <span class="st">&quot;MDETM&quot;</span>),</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMENDTC&quot;</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>    <span class="at">raw_fmt =</span> <span class="fu">c</span>(<span class="st">&quot;d-m-y&quot;</span>, <span class="st">&quot;H:M&quot;</span>),</span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>    <span class="at">raw_unk =</span> <span class="fu">c</span>(<span class="st">&quot;UN&quot;</span>, <span class="st">&quot;UNK&quot;</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>  <span class="co"># Map qualifier CMENRTPT as If MDONG == 1 then CM.CMENRTPT = &#39;ONGOING&#39;</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>  <span class="fu">hardcode_ct</span>(</span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a>    <span class="at">raw_dat =</span> <span class="fu">condition_add</span>(cm_raw, MDONG <span class="sc">==</span> <span class="st">&quot;1&quot;</span>),</span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDONG&quot;</span>,</span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMENRTPT&quot;</span>,</span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a>    <span class="at">tgt_val =</span> <span class="st">&quot;ONGOING&quot;</span>,</span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a>    <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a>    <span class="at">ct_clst =</span> <span class="st">&quot;C66728&quot;</span>,</span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-28"><a href="#cb15-28" tabindex="-1"></a>  <span class="co"># Map qualifier CMENTPT as If MDONG == 1 then CM.CMENTPT = &#39;DATE OF LAST ASSESSMENT&#39;</span></span>
+<span id="cb15-29"><a href="#cb15-29" tabindex="-1"></a>  <span class="fu">hardcode_no_ct</span>(</span>
+<span id="cb15-30"><a href="#cb15-30" tabindex="-1"></a>    <span class="at">raw_dat =</span> <span class="fu">condition_add</span>(cm_raw, MDONG <span class="sc">==</span> <span class="st">&quot;1&quot;</span>),</span>
+<span id="cb15-31"><a href="#cb15-31" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDONG&quot;</span>,</span>
+<span id="cb15-32"><a href="#cb15-32" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMENTPT&quot;</span>,</span>
+<span id="cb15-33"><a href="#cb15-33" tabindex="-1"></a>    <span class="at">tgt_val =</span> <span class="st">&quot;DATE OF LAST ASSESSMENT&quot;</span>,</span>
+<span id="cb15-34"><a href="#cb15-34" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-35"><a href="#cb15-35" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-36"><a href="#cb15-36" tabindex="-1"></a>  <span class="co"># Map qualifier CMDOS as If collected value in raw_var DOS is numeric then CM.CMDOSE</span></span>
+<span id="cb15-37"><a href="#cb15-37" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb15-38"><a href="#cb15-38" tabindex="-1"></a>    <span class="at">raw_dat =</span> <span class="fu">condition_add</span>(cm_raw, <span class="fu">is.numeric</span>(DOS)),</span>
+<span id="cb15-39"><a href="#cb15-39" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;DOS&quot;</span>,</span>
+<span id="cb15-40"><a href="#cb15-40" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDOS&quot;</span>,</span>
+<span id="cb15-41"><a href="#cb15-41" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-42"><a href="#cb15-42" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-43"><a href="#cb15-43" tabindex="-1"></a>  <span class="co"># Map qualifier CMDOS as If collected value in raw_var DOS is character then CM.CMDOSTXT</span></span>
+<span id="cb15-44"><a href="#cb15-44" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb15-45"><a href="#cb15-45" tabindex="-1"></a>    <span class="at">raw_dat =</span> <span class="fu">condition_add</span>(cm_raw, <span class="fu">is.character</span>(DOS)),</span>
+<span id="cb15-46"><a href="#cb15-46" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;DOS&quot;</span>,</span>
+<span id="cb15-47"><a href="#cb15-47" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDOSTXT&quot;</span>,</span>
+<span id="cb15-48"><a href="#cb15-48" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-49"><a href="#cb15-49" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-50"><a href="#cb15-50" tabindex="-1"></a>  <span class="co"># Map qualifier CMDOSU as the collected value in the cm_raw dataset DOSU variable to CM.CMDOSU</span></span>
+<span id="cb15-51"><a href="#cb15-51" tabindex="-1"></a>  <span class="fu">assign_ct</span>(</span>
+<span id="cb15-52"><a href="#cb15-52" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-53"><a href="#cb15-53" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;DOSU&quot;</span>,</span>
+<span id="cb15-54"><a href="#cb15-54" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDOSU&quot;</span>,</span>
+<span id="cb15-55"><a href="#cb15-55" tabindex="-1"></a>    <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb15-56"><a href="#cb15-56" tabindex="-1"></a>    <span class="at">ct_clst =</span> <span class="st">&quot;C71620&quot;</span>,</span>
+<span id="cb15-57"><a href="#cb15-57" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-58"><a href="#cb15-58" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-59"><a href="#cb15-59" tabindex="-1"></a>  <span class="co"># Map qualifier CMDOSFRM as the collected value in the cm_raw dataset MDFORM variable to CM.CMDOSFRM</span></span>
+<span id="cb15-60"><a href="#cb15-60" tabindex="-1"></a>  <span class="fu">assign_ct</span>(</span>
+<span id="cb15-61"><a href="#cb15-61" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-62"><a href="#cb15-62" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDFORM&quot;</span>,</span>
+<span id="cb15-63"><a href="#cb15-63" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDOSFRM&quot;</span>,</span>
+<span id="cb15-64"><a href="#cb15-64" tabindex="-1"></a>    <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb15-65"><a href="#cb15-65" tabindex="-1"></a>    <span class="at">ct_clst =</span> <span class="st">&quot;C66726&quot;</span>,</span>
+<span id="cb15-66"><a href="#cb15-66" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-67"><a href="#cb15-67" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-68"><a href="#cb15-68" tabindex="-1"></a>  <span class="co"># Map CMROUTE as the collected value in the cm_raw dataset MDRTE variable to CM.CMROUTE</span></span>
+<span id="cb15-69"><a href="#cb15-69" tabindex="-1"></a>  <span class="fu">assign_ct</span>(</span>
+<span id="cb15-70"><a href="#cb15-70" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-71"><a href="#cb15-71" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDRTE&quot;</span>,</span>
+<span id="cb15-72"><a href="#cb15-72" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMROUTE&quot;</span>,</span>
+<span id="cb15-73"><a href="#cb15-73" tabindex="-1"></a>    <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb15-74"><a href="#cb15-74" tabindex="-1"></a>    <span class="at">ct_clst =</span> <span class="st">&quot;C66729&quot;</span>,</span>
+<span id="cb15-75"><a href="#cb15-75" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-76"><a href="#cb15-76" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-77"><a href="#cb15-77" tabindex="-1"></a>  <span class="co"># Map qualifier CMPROPH as If MDPROPH == 1 then CM.CMPROPH = &#39;Y&#39;</span></span>
+<span id="cb15-78"><a href="#cb15-78" tabindex="-1"></a>  <span class="fu">hardcode_ct</span>(</span>
+<span id="cb15-79"><a href="#cb15-79" tabindex="-1"></a>    <span class="at">raw_dat =</span> <span class="fu">condition_add</span>(cm_raw, MDPROPH <span class="sc">==</span> <span class="st">&quot;1&quot;</span>),</span>
+<span id="cb15-80"><a href="#cb15-80" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;MDPROPH&quot;</span>,</span>
+<span id="cb15-81"><a href="#cb15-81" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMPROPH&quot;</span>,</span>
+<span id="cb15-82"><a href="#cb15-82" tabindex="-1"></a>    <span class="at">tgt_val =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb15-83"><a href="#cb15-83" tabindex="-1"></a>    <span class="at">ct_spec =</span> study_ct,</span>
+<span id="cb15-84"><a href="#cb15-84" tabindex="-1"></a>    <span class="at">ct_clst =</span> <span class="st">&quot;C66742&quot;</span>,</span>
+<span id="cb15-85"><a href="#cb15-85" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-86"><a href="#cb15-86" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-87"><a href="#cb15-87" tabindex="-1"></a>  <span class="co"># Map CMDRG as the collected value in the cm_raw dataset CMDRG variable to CM.CMDRG</span></span>
+<span id="cb15-88"><a href="#cb15-88" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb15-89"><a href="#cb15-89" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-90"><a href="#cb15-90" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;CMDRG&quot;</span>,</span>
+<span id="cb15-91"><a href="#cb15-91" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDRG&quot;</span>,</span>
+<span id="cb15-92"><a href="#cb15-92" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-93"><a href="#cb15-93" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-94"><a href="#cb15-94" tabindex="-1"></a>  <span class="co"># Map CMDRGCD as the collected value in the cm_raw dataset CMDRGCD variable to CM.CMDRGCD</span></span>
+<span id="cb15-95"><a href="#cb15-95" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb15-96"><a href="#cb15-96" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-97"><a href="#cb15-97" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;CMDRGCD&quot;</span>,</span>
+<span id="cb15-98"><a href="#cb15-98" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDRGCD&quot;</span>,</span>
+<span id="cb15-99"><a href="#cb15-99" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-100"><a href="#cb15-100" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-101"><a href="#cb15-101" tabindex="-1"></a>  <span class="co"># Map CMDECOD as the collected value in the cm_raw dataset CMDECOD variable to CM.CMDECOD</span></span>
+<span id="cb15-102"><a href="#cb15-102" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb15-103"><a href="#cb15-103" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-104"><a href="#cb15-104" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;CMDECOD&quot;</span>,</span>
+<span id="cb15-105"><a href="#cb15-105" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMDECOD&quot;</span>,</span>
+<span id="cb15-106"><a href="#cb15-106" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-107"><a href="#cb15-107" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-108"><a href="#cb15-108" tabindex="-1"></a>  <span class="co"># Map CMPNCD as the collected value in the cm_raw dataset CMPNCD variable to CM.CMPNCD</span></span>
+<span id="cb15-109"><a href="#cb15-109" tabindex="-1"></a>  <span class="fu">assign_no_ct</span>(</span>
+<span id="cb15-110"><a href="#cb15-110" tabindex="-1"></a>    <span class="at">raw_dat =</span> cm_raw,</span>
+<span id="cb15-111"><a href="#cb15-111" tabindex="-1"></a>    <span class="at">raw_var =</span> <span class="st">&quot;CMPNCD&quot;</span>,</span>
+<span id="cb15-112"><a href="#cb15-112" tabindex="-1"></a>    <span class="at">tgt_var =</span> <span class="st">&quot;CMPNCD&quot;</span>,</span>
+<span id="cb15-113"><a href="#cb15-113" tabindex="-1"></a>    <span class="at">id_vars =</span> <span class="fu">oak_id_vars</span>()</span>
+<span id="cb15-114"><a href="#cb15-114" tabindex="-1"></a>  )</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="1%" />
+<col width="2%" />
+<col width="3%" />
+<col width="7%" />
+<col width="2%" />
+<col width="2%" />
+<col width="4%" />
+<col width="2%" />
+<col width="2%" />
+<col width="4%" />
+<col width="7%" />
+<col width="2%" />
+<col width="4%" />
+<col width="2%" />
+<col width="6%" />
+<col width="1%" />
+<col width="2%" />
+<col width="2%" />
+<col width="3%" />
+<col width="2%" />
+<col width="12%" />
+<col width="3%" />
+<col width="12%" />
+<col width="3%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">CMTRT</th>
+<th align="right">CMGRPID</th>
+<th align="left">CMDOSU</th>
+<th align="left">CMSTDTC</th>
+<th align="left">CMSTRTPT</th>
+<th align="left">CMSTTPT</th>
+<th align="left">CMDOSFRQ</th>
+<th align="left">CMMODIFY</th>
+<th align="left">CMINDC</th>
+<th align="left">CMENDTC</th>
+<th align="left">CMENRTPT</th>
+<th align="left">CMENTPT</th>
+<th align="right">CMDOS</th>
+<th align="right">CMDOSTXT</th>
+<th align="left">CMDOSFRM</th>
+<th align="left">CMROUTE</th>
+<th align="left">CMPROPH</th>
+<th align="left">CMDRG</th>
+<th align="right">CMDRGCD</th>
+<th align="left">CMDECOD</th>
+<th align="right">CMPNCD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">NA</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">ONGOING</td>
+<td align="left">DATE OF LAST ASSESSMENT</td>
+<td align="right">10</td>
+<td align="right">NA</td>
+<td align="left">TABLET</td>
+<td align="left">ORAL</td>
+<td align="left">NA</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">2701701</td>
+<td align="left">ACETYLSALICYLIC ACID</td>
+<td align="right">2701001</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">CORTISPORIN</td>
+<td align="right">2</td>
+<td align="left">g</td>
+<td align="left">2020-09-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">CORTISPORIN (UNITED STATES)</td>
+<td align="left">NAUSEA</td>
+<td align="left">NA</td>
+<td align="left">ONGOING</td>
+<td align="left">DATE OF LAST ASSESSMENT</td>
+<td align="right">50</td>
+<td align="right">NA</td>
+<td align="left">PILL</td>
+<td align="left">ORAL</td>
+<td align="left">NA</td>
+<td align="left">CORTICOSTEROIDS AND ANTIINFECTIVES IN COMBINATION</td>
+<td align="right">90104001001</td>
+<td align="left">CORTICOSTEROIDS AND ANTIINFECTIVES IN COMBINATION</td>
+<td align="right">90104001001</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">ASPIRIN</td>
+<td align="right">1</td>
+<td align="left"></td>
+<td align="left">2021-02-17T08:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">ANEMIA</td>
+<td align="left">2021-02-17</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">ASPIRIN [ACETYLSALICYLIC ACID]</td>
+<td align="right">2701004</td>
+<td align="left">ACETYLSALICYLIC ACID</td>
+<td align="right">2701001</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-10-04T09:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left">NA</td>
+<td align="left">NAUSEA</td>
+<td align="left">NA</td>
+<td align="left">ONGOING</td>
+<td align="left">DATE OF LAST ASSESSMENT</td>
+<td align="right">50</td>
+<td align="right">NA</td>
+<td align="left">CAPSULE</td>
+<td align="left">ORAL</td>
+<td align="left">NA</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">402246</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">402001</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">PARCETEMOL</td>
+<td align="right">2</td>
+<td align="left">mg</td>
+<td align="left">2020-01-20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left"></td>
+<td align="left">PYREXIA</td>
+<td align="left">2020-01-20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">CAPSULE</td>
+<td align="left">ORAL</td>
+<td align="left">Y</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">VOMIKIND</td>
+<td align="right">3</td>
+<td align="left">TABLET</td>
+<td align="left">2019</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PRN (AS NEEDED)</td>
+<td align="left"></td>
+<td align="left">VOMITINGS</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="left">ORAL</td>
+<td align="left">Y</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="right">5</td>
+<td align="left">mL</td>
+<td align="left">2019—20T10:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PRN (AS NEEDED)</td>
+<td align="left"></td>
+<td align="left">DIARHHEA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">INJECTION</td>
+<td align="left">INTRAMUSCULAR</td>
+<td align="left">Y</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="right">4</td>
+<td align="left">g</td>
+<td align="left">2020</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">AMITRIPTYLINE</td>
+<td align="left">COLD</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">12</td>
+<td align="right">NA</td>
+<td align="left">INHALANT</td>
+<td align="left">INTRA-ARTERIAL</td>
+<td align="left">NA</td>
+<td align="left">AMITRIPTYLINE</td>
+<td align="right">2201001</td>
+<td align="left">AMITRIPTYLINE</td>
+<td align="right">2201001</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">BENADRYL</td>
+<td align="right">1</td>
+<td align="left">mg</td>
+<td align="left">2020-01-26T09:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left">BENADRYL (UNITED STATES)</td>
+<td align="left">FEVER</td>
+<td align="left">2020-01-26T07:00</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">100</td>
+<td align="right">NA</td>
+<td align="left">CAPSULE</td>
+<td align="left">ORAL</td>
+<td align="left">Y</td>
+<td align="left">BENADRYL [DIPHENHYDRAMINE HYDROCHLORIDE]</td>
+<td align="right">402002</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">402001</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">2</td>
+<td align="left">CAPSULE</td>
+<td align="left">2020-01-28</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">NA</td>
+<td align="left">LEG PAIN</td>
+<td align="left">2020-02-01</td>
+<td align="left">ONGOING</td>
+<td align="left">DATE OF LAST ASSESSMENT</td>
+<td align="right">100</td>
+<td align="right">NA</td>
+<td align="left">CAPSULE</td>
+<td align="left">UNKNOWN</td>
+<td align="left">NA</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">402001</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">402001</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="repeatsteps" class="section level2">
+<h2>Repeat Map Topic and Map Rest</h2>
+<p>There is only one topic variable in this raw data source, and there
+are no additional topic variable mappings. Users can proceed to the next
+step. This is required only if there is more than one topic variable to
+map.</p>
+</div>
+<div id="derivedvars" class="section level2">
+<h2>Create SDTM derived variables</h2>
+<p>The SDTM derived variables or any SDTM mapping that is applicable to
+all the records in the <code>cm</code> dataset produced in the previous
+step cam be created now. In this example, we will create the
+<code>CMSEQ</code> variable. The mapping logic is
+<code>Create a sequence number for each record in the CM domain</code>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="co"># The below mappings are applicable to all the records in the cm domain,</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="co"># hence can be derived using mutate statement.</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>    <span class="at">STUDYID =</span> <span class="st">&quot;test_study&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>    <span class="at">DOMAIN =</span> <span class="st">&quot;CM&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>    <span class="at">CMCAT =</span> <span class="st">&quot;GENERAL CONMED&quot;</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>    <span class="at">USUBJID =</span> <span class="fu">paste0</span>(<span class="st">&quot;test_study&quot;</span>, <span class="st">&quot;-&quot;</span>, cm_raw<span class="sc">$</span>PATNUM)</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>  <span class="co"># derive sequence number</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>  <span class="co"># derive_seq(tgt_var = &quot;CMSEQ&quot;,</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>  <span class="co">#            rec_vars= c(&quot;USUBJID&quot;, &quot;CMGRPID&quot;)) %&gt;%</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>  <span class="fu">derive_study_day</span>(</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>    <span class="at">sdtm_in =</span> .,</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>    <span class="at">dm_domain =</span> dm,</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>    <span class="at">tgdt =</span> <span class="st">&quot;CMENDTC&quot;</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>    <span class="at">refdt =</span> <span class="st">&quot;RFXSTDTC&quot;</span>,</span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>    <span class="at">study_day_var =</span> <span class="st">&quot;CMENDY&quot;</span></span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a>  <span class="fu">derive_study_day</span>(</span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a>    <span class="at">sdtm_in =</span> .,</span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a>    <span class="at">dm_domain =</span> dm,</span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a>    <span class="at">tgdt =</span> <span class="st">&quot;CMSTDTC&quot;</span>,</span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a>    <span class="at">refdt =</span> <span class="st">&quot;RFXSTDTC&quot;</span>,</span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a>    <span class="at">study_day_var =</span> <span class="st">&quot;CMSTDY&quot;</span></span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a>  <span class="co"># Add code for derive Baseline flag.</span></span>
+<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="st">&quot;STUDYID&quot;</span>, <span class="st">&quot;DOMAIN&quot;</span>, <span class="st">&quot;USUBJID&quot;</span>, <span class="fu">everything</span>())</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="1%" />
+<col width="2%" />
+<col width="3%" />
+<col width="2%" />
+<col width="1%" />
+<col width="3%" />
+<col width="1%" />
+<col width="7%" />
+<col width="1%" />
+<col width="2%" />
+<col width="2%" />
+<col width="2%" />
+<col width="4%" />
+<col width="6%" />
+<col width="2%" />
+<col width="2%" />
+<col width="2%" />
+<col width="5%" />
+<col width="1%" />
+<col width="2%" />
+<col width="2%" />
+<col width="3%" />
+<col width="1%" />
+<col width="11%" />
+<col width="2%" />
+<col width="11%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">oak_id</th>
+<th align="left">raw_source</th>
+<th align="right">patient_number</th>
+<th align="left">STUDYID</th>
+<th align="left">DOMAIN</th>
+<th align="left">USUBJID</th>
+<th align="right">CMGRPID</th>
+<th align="left">CMTRT</th>
+<th align="left">CMDOSU</th>
+<th align="left">CMSTDTC</th>
+<th align="left">CMSTRTPT</th>
+<th align="left">CMSTTPT</th>
+<th align="left">CMDOSFRQ</th>
+<th align="left">CMMODIFY</th>
+<th align="left">CMINDC</th>
+<th align="left">CMENDTC</th>
+<th align="left">CMENRTPT</th>
+<th align="left">CMENTPT</th>
+<th align="right">CMDOS</th>
+<th align="right">CMDOSTXT</th>
+<th align="left">CMDOSFRM</th>
+<th align="left">CMROUTE</th>
+<th align="left">CMPROPH</th>
+<th align="left">CMDRG</th>
+<th align="right">CMDRGCD</th>
+<th align="left">CMDECOD</th>
+<th align="right">CMPNCD</th>
+<th align="right">CMSTDY</th>
+<th align="right">CMENDY</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-375</td>
+<td align="right">1</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="left">mg</td>
+<td align="left">NA</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">ONGOING</td>
+<td align="left">DATE OF LAST ASSESSMENT</td>
+<td align="right">10</td>
+<td align="right">NA</td>
+<td align="left">TABLET</td>
+<td align="left">ORAL</td>
+<td align="left">NA</td>
+<td align="left">BABY ASPIRIN</td>
+<td align="right">2701701</td>
+<td align="left">ACETYLSALICYLIC ACID</td>
+<td align="right">2701001</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">cm_raw</td>
+<td align="right">375</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-375</td>
+<td align="right">2</td>
+<td align="left">CORTISPORIN</td>
+<td align="left">g</td>
+<td align="left">2020-09-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">CORTISPORIN (UNITED STATES)</td>
+<td align="left">NAUSEA</td>
+<td align="left">NA</td>
+<td align="left">ONGOING</td>
+<td align="left">DATE OF LAST ASSESSMENT</td>
+<td align="right">50</td>
+<td align="right">NA</td>
+<td align="left">PILL</td>
+<td align="left">ORAL</td>
+<td align="left">NA</td>
+<td align="left">CORTICOSTEROIDS AND ANTIINFECTIVES IN COMBINATION</td>
+<td align="right">90104001001</td>
+<td align="left">CORTICOSTEROIDS AND ANTIINFECTIVES IN COMBINATION</td>
+<td align="right">90104001001</td>
+<td align="right">-941</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">cm_raw</td>
+<td align="right">376</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-376</td>
+<td align="right">1</td>
+<td align="left">ASPIRIN</td>
+<td align="left"></td>
+<td align="left">2021-02-17</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">ANEMIA</td>
+<td align="left">2021-02-17</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">ASPIRIN [ACETYLSALICYLIC ACID]</td>
+<td align="right">2701004</td>
+<td align="left">ACETYLSALICYLIC ACID</td>
+<td align="right">2701001</td>
+<td align="right">334</td>
+<td align="right">334</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-377</td>
+<td align="right">1</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="left">mg</td>
+<td align="left">2020-10-04</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left">NA</td>
+<td align="left">NAUSEA</td>
+<td align="left">NA</td>
+<td align="left">ONGOING</td>
+<td align="left">DATE OF LAST ASSESSMENT</td>
+<td align="right">50</td>
+<td align="right">NA</td>
+<td align="left">CAPSULE</td>
+<td align="left">ORAL</td>
+<td align="left">NA</td>
+<td align="left">DIPHENHYDRAMINE HCL</td>
+<td align="right">402246</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">402001</td>
+<td align="right">205</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-377</td>
+<td align="right">2</td>
+<td align="left">PARCETEMOL</td>
+<td align="left">mg</td>
+<td align="left">2020-01-20</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left"></td>
+<td align="left">PYREXIA</td>
+<td align="left">2020-01-20</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">CAPSULE</td>
+<td align="left">ORAL</td>
+<td align="left">Y</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="right">-54</td>
+<td align="right">-54</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-377</td>
+<td align="right">3</td>
+<td align="left">VOMIKIND</td>
+<td align="left">TABLET</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PRN (AS NEEDED)</td>
+<td align="left"></td>
+<td align="left">VOMITINGS</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="left">ORAL</td>
+<td align="left">Y</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">cm_raw</td>
+<td align="right">377</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-377</td>
+<td align="right">5</td>
+<td align="left">ZENFLOX OZ</td>
+<td align="left">mL</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PRN (AS NEEDED)</td>
+<td align="left"></td>
+<td align="left">DIARHHEA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">INJECTION</td>
+<td align="left">INTRAMUSCULAR</td>
+<td align="left">Y</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="left"></td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-378</td>
+<td align="right">4</td>
+<td align="left">AMITRYPTYLINE</td>
+<td align="left">g</td>
+<td align="left">NA</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">AMITRIPTYLINE</td>
+<td align="left">COLD</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">12</td>
+<td align="right">NA</td>
+<td align="left">INHALANT</td>
+<td align="left">INTRA-ARTERIAL</td>
+<td align="left">NA</td>
+<td align="left">AMITRIPTYLINE</td>
+<td align="right">2201001</td>
+<td align="left">AMITRIPTYLINE</td>
+<td align="right">2201001</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-378</td>
+<td align="right">1</td>
+<td align="left">BENADRYL</td>
+<td align="left">mg</td>
+<td align="left">2020-01-26</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BID (TWICE A DAY)</td>
+<td align="left">BENADRYL (UNITED STATES)</td>
+<td align="left">FEVER</td>
+<td align="left">2020-01-26</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">100</td>
+<td align="right">NA</td>
+<td align="left">CAPSULE</td>
+<td align="left">ORAL</td>
+<td align="left">Y</td>
+<td align="left">BENADRYL [DIPHENHYDRAMINE HYDROCHLORIDE]</td>
+<td align="right">402002</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">402001</td>
+<td align="right">-377</td>
+<td align="right">-377</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">cm_raw</td>
+<td align="right">378</td>
+<td align="left">test_study</td>
+<td align="left">CM</td>
+<td align="left">test_study-378</td>
+<td align="right">2</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="left">CAPSULE</td>
+<td align="left">2020-01-28</td>
+<td align="left">BEFORE</td>
+<td align="left">SCREENING</td>
+<td align="left">QD (EVERY DAY)</td>
+<td align="left">NA</td>
+<td align="left">LEG PAIN</td>
+<td align="left">2020-02-01</td>
+<td align="left">ONGOING</td>
+<td align="left">DATE OF LAST ASSESSMENT</td>
+<td align="right">100</td>
+<td align="right">NA</td>
+<td align="left">CAPSULE</td>
+<td align="left">UNKNOWN</td>
+<td align="left">NA</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">402001</td>
+<td align="left">DIPHENHYDRAMINE HYDROCHLORIDE</td>
+<td align="right">402001</td>
+<td align="right">-375</td>
+<td align="right">-371</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="attributes" class="section level2">
+<h2>Add Labels and Attributes</h2>
+<p>Yet to be developed.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
